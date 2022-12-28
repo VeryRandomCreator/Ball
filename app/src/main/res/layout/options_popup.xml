@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022 VeryRandomCreator
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_rectangle">
+
+    <Switch
+        android:id="@+id/soundTglBtn"
+        android:layout_width="200dp"
+        android:layout_height="70dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:text="@string/sound"
+        android:contentDescription="@string/sound_swtch_dsc"
+        android:textSize="35sp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <HorizontalScrollView
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/soundTglBtn"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="15dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/redBallBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/ic_baseline_circle_24"
+                android:contentDescription="@string/red_ball_btn_dsc"
+                app:tint="@color/soft_red" />
+
+            <ImageButton
+                android:id="@+id/greenBallBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/redBallBtn"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/ic_baseline_circle_24"
+                android:contentDescription="@string/green_ball_btn_dsc"
+                app:tint="@color/soft_green" />
+
+            <ImageButton
+                android:id="@+id/blueBallBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/greenBallBtn"
+                android:contentDescription="@string/blue_ball_btn_dsc"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/ic_baseline_circle_24"
+                app:tint="@color/soft_blue" />
+
+            <ImageButton
+                android:id="@+id/purpleBallBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/blueBallBtn"
+                android:contentDescription="@string/purple_ball_btn_dsc"
+                android:backgroundTint="#00FFFFFF"
+                android:src="@drawable/ic_baseline_circle_24"
+                app:tint="@color/soft_purple"/>
+
+            <ImageButton
+                android:id="@+id/rainbowBallBtn"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/purpleBallBtn"
+                android:contentDescription="@string/rainbow_ball_btn_dsc"
+                android:backgroundTint="#00FFFFFF"
+                android:scaleType="fitCenter"
+                android:src="@drawable/rainbow_balls" />
+
+        </RelativeLayout>
+
+    </HorizontalScrollView>
+</RelativeLayout>
