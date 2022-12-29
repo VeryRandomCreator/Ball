@@ -2,7 +2,7 @@
 This is a calming sandbox game with a very clean and simple interface, in which you generate colored circles with bounce around your screen. You get to choose where they go, how fast they go, and what color they are, all in this relaxing sandbox game.
 
 ## Contact
-VeryRandomCreator's email: `EMAIL`
+VeryRandomCreator's email: `veryrandomcreator@gmail.com`
 
 ## Specifics
 <img src="https://img.shields.io/badge/Latest%20Release-Dec%2028%2C%202022-yellow">  <img src="https://img.shields.io/badge/Version-1.0.0-green">  <a href="https://github.com/VeryRandomCreator/Ball/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT%20License-blue"></a>
