@@ -19,7 +19,7 @@ https://github.com/VeryRandomCreator/Ball/blob/a7aec5b5a1d89f619f07539ffc337cdd4
 One permission is requested in the 'AndroidManifest.xml' file:
 https://github.com/VeryRandomCreator/Ball/blob/a7aec5b5a1d89f619f07539ffc337cdd4ead0e5f/app/src/main/AndroidManifest.xml#L7
 
-The 'android.permission.VIBRATE' allows the app to vibrate the device. This permission can not be toggled.
+The `android.permission.VIBRATE` allows the app to vibrate the device. This permission can not be toggled.
 
 ## Attributions
 The code for some of the foundation of the app was referenced from <a href="https://google-developer-training.github.io/android-developer-advanced-course-practicals/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-2-p-create-a-surfaceview/11-2-p-create-a-surfaceview.html">this site</a>. Said site is under the Creative Commons Attribution 4.0 International License, and is attributed to the Google Developers Training Team.
