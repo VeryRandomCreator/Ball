@@ -13,11 +13,11 @@ I have not developed this app with any intention or knowledge that personal info
 No information unique to your device (ex: ids) is saved or sent.
 
 The size of the window is retrieved and used while the app is running, but is not stored after the app's lifecycle finishes. The following is the line of code retrieving this:
-https://github.com/VeryRandomCreator/Ball/blob/a7aec5b5a1d89f619f07539ffc337cdd4ead0e5f/app/src/main/java/com/veryrandomcreator/ball/MainActivity.java?plain=1#L115
+https://github.com/VeryRandomCreator/Ball/blob/16b0e8cf410b2687d72029fac5bc18aff6bb0c3a/app/src/main/java/com/veryrandomcreator/ball/MainActivity.java#L124
 
 ### Permissions
 One permission is requested in the 'AndroidManifest.xml' file:
-https://github.com/VeryRandomCreator/Ball/blob/a7aec5b5a1d89f619f07539ffc337cdd4ead0e5f/app/src/main/AndroidManifest.xml#L7
+https://github.com/VeryRandomCreator/Ball/blob/16b0e8cf410b2687d72029fac5bc18aff6bb0c3a/app/src/main/AndroidManifest.xml#L7
 
 The `android.permission.VIBRATE` allows the app to vibrate the device. This permission can not be toggled.
 
