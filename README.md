@@ -5,7 +5,7 @@ This is a calming sandbox game with a very clean and simple interface, in which 
 VeryRandomCreator's email: `veryrandomcreator@gmail.com`
 
 ## Specifics
-<img src="https://img.shields.io/badge/Latest%20Release-Dec%2028%2C%202022-yellow">  <img src="https://img.shields.io/badge/Version-1.0.0-green">  <a href="https://github.com/VeryRandomCreator/Ball/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT%20License-blue"></a>
+<img src="https://img.shields.io/badge/Latest%20Release-Jan%202%2C%202023-yellow">  <img src="https://img.shields.io/badge/Version-1.0.0-green">  <a href="https://github.com/VeryRandomCreator/Ball/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT%20License-blue"></a>
 
 <img src="https://img.shields.io/badge/Target%20API%20Level-API%2032%20(Android%2012L)-red">  <img src="https://img.shields.io/badge/Minimum%20API%20Level-API%2021%20(Android%205.0)-orange">
 
