@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
- Copyright (c) 2022 VeryRandomCreator
+ Copyright (c) 2022-2023 VeryRandomCreator
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -63,31 +63,43 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     private Typeface fontRegular;
 
     /**
-     * Static final values of {@link MainActivity#optionsPopup}.
+     * Static final values of {@link MainActivity#optionsPopup} and {@link MainActivity#trashBtn}.
      */
-    public static final int OPTIONS_WIDTH = 200;
-    public static final int OPTIONS_HEIGHT = 200;
+    public static final int UTILITY_WIDTH = 200;
+    public static final int UTILITY_HEIGHT = 200;
     public static final int MARGIN_FROM_TOP = 25;
 
     /**
-     * Default amount of time to vibrate.
+     * Static final values of {@link MainActivity#trashBtn} states.
      */
-    public static final int VIBRATE_TIME = 500;
+    public static final byte TRASH_DEFAULT = 0;
+    public static final byte TRASH_DEFAULT_CLICKED = 1;
+    public static final byte TRASH_OPEN = 2;
+    public static final byte TRASH_OPEN_CLICKED = 3;
 
     /**
-     * {@link MainActivity#fadeOutAnim} is {@link Animation} of {@link com.veryrandomcreator.ball.R.anim#fade_out}, to fade {@link MainActivity#options} out.
+     * Static final values for vibrating
+     */
+    public static final int VIBRATE_TIME = 30;
+    public static final int VIBRATE_AMPLITUDE = 255;
+
+    /**
+     * {@link MainActivity#fadeOutAnim} is {@link Animation} of {@link com.veryrandomcreator.ball.R.anim#fade_out}, to fade {@link MainActivity#optionsBtn} out.
      */
     private Animation fadeOutAnim;
 
     /**
-     * {@link MainActivity#fadeInAnim} is {@link Animation} of {@link com.veryrandomcreator.ball.R.anim#fade_in}, to fade {@link MainActivity#options} in.
+     * {@link MainActivity#fadeInAnim} is {@link Animation} of {@link com.veryrandomcreator.ball.R.anim#fade_in}, to fade {@link MainActivity#optionsBtn} in.
      */
     private Animation fadeInAnim;
 
     private SimpleView simpleView;
-    private ImageButton options;
+    private ImageButton trashBtn;
+    private ImageButton optionsBtn;
     private TextView titleLbl;
     private PopupWindow optionsPopup;
+
+    private byte trashState = TRASH_DEFAULT;
 
     /**
      * Buttons in {@link MainActivity#optionsPopup}
@@ -103,10 +115,10 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     /**
      * Stores whether sound should be on or off
      */
-    private boolean shouldPlaySound = false;
+    private boolean shouldPlaySound = true;
 
     /**
-     * Loads fonts, animations, instantiates {@link SimpleView}, and sets up options menu button {@link MainActivity#options}.
+     * Loads fonts, animations, instantiates {@link SimpleView}, and sets up options menu button {@link MainActivity#optionsBtn}.
      *
      * @param savedInstanceState Default param of {@link AppCompatActivity#onCreate(Bundle)}
      */
@@ -135,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
 
         addContentView(titleLbl, titleParams);
         loadOptionsButton(point);
+        loadTrashButton(point);
     }
 
     /**
@@ -150,22 +163,22 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     }
 
     /**
-     * Sets up {@link MainActivity#options}
+     * Sets up {@link MainActivity#optionsBtn}
      *
      * @param point Window bounds point (side of window)
      */
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     public void loadOptionsButton(Point point) {
-        options = new ImageButton(getApplicationContext());
-        options.setImageDrawable(getResources().getDrawable(R.drawable.options));
-        options.setBackgroundColor(getResources().getColor(R.color.transparent));
-        options.setOnTouchListener((v, event) -> {
+        optionsBtn = new ImageButton(getApplicationContext());
+        optionsBtn.setImageDrawable(getResources().getDrawable(R.drawable.options));
+        optionsBtn.setBackgroundColor(getResources().getColor(R.color.transparent));
+        optionsBtn.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    options.setImageDrawable(getResources().getDrawable(R.drawable.options_clicked));
+                    optionsBtn.setImageDrawable(getResources().getDrawable(R.drawable.options_clicked));
                     break;
                 case MotionEvent.ACTION_UP:
-                    options.setImageDrawable(getResources().getDrawable(R.drawable.options));
+                    optionsBtn.setImageDrawable(getResources().getDrawable(R.drawable.options));
                     launchOptionsPopup();
                     break;
             }
@@ -173,13 +186,66 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
         });
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.width = OPTIONS_WIDTH;
-        params.height = OPTIONS_HEIGHT;
-        params.leftMargin = point.x - OPTIONS_WIDTH;
+        params.width = UTILITY_WIDTH;
+        params.height = UTILITY_HEIGHT;
+        params.leftMargin = point.x - UTILITY_WIDTH;
         params.topMargin = MARGIN_FROM_TOP;
-        addContentView(options, params);
+        addContentView(optionsBtn, params);
 
         toggleOptionsVisibility();
+    }
+
+    /**
+     * Sets up {@link MainActivity#trashBtn}
+     *
+     * @param point Window bounds point (side of window)
+     */
+    @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
+    public void loadTrashButton(Point point) {
+        trashBtn = new ImageButton(getApplicationContext());
+        trashBtn.setImageDrawable(getResources().getDrawable(R.drawable.trash));
+        trashBtn.setBackgroundColor(getResources().getColor(R.color.transparent));
+        trashBtn.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    switch (trashState) {
+                        case TRASH_OPEN:
+                            trashBtn.setImageDrawable(getResources().getDrawable(R.drawable.trash_open_clicked));
+                            trashState = TRASH_OPEN_CLICKED;
+                            break;
+                        case TRASH_DEFAULT:
+                            trashBtn.setImageDrawable(getResources().getDrawable(R.drawable.trash_clicked));
+                            trashState = TRASH_DEFAULT_CLICKED;
+                            break;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    switch (trashState) {
+                        case TRASH_OPEN_CLICKED:
+                            trashBtn.setImageDrawable(getResources().getDrawable(R.drawable.trash));
+                            simpleView.setTrashActive(false);
+                            trashState = TRASH_DEFAULT;
+                            break;
+                        case TRASH_DEFAULT_CLICKED:
+                            trashBtn.setImageDrawable(getResources().getDrawable(R.drawable.trash_open));
+                            simpleView.setTrashActive(true);
+                            trashState = TRASH_OPEN;
+                            break;
+                    }
+                    vibrate();
+                    break;
+            }
+            return true;
+        });
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.width = UTILITY_WIDTH;
+        params.height = UTILITY_HEIGHT;
+        params.leftMargin = point.x - UTILITY_WIDTH;
+        params.topMargin = point.y - UTILITY_HEIGHT - MARGIN_FROM_TOP;
+        addContentView(trashBtn, params);
+
+        toggleTrashVisibility();
     }
 
     /**
@@ -223,15 +289,16 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
 
         soundTglBtn.setTypeface(fontLight);
         soundTglBtn.setChecked(shouldPlaySound);
-        soundTglBtn.setOnClickListener(v -> shouldPlaySound = !shouldPlaySound);
+        soundTglBtn.setOnClickListener(v -> {
+            vibrate();
+            shouldPlaySound = !shouldPlaySound;
+        });
 
-        setSquareScale(rainbowBallBtn, 1.25f);
+        setSquareScale(rainbowBallBtn, 2f);
 
         updateSelectedBall();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrate();
-        }
+        vibrate();
     }
 
     /**
@@ -244,67 +311,68 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.redBallBtn:
-                simpleView.setCurrentMode(Mode.DEFAULT);
+                simpleView.setCurrentMode(SimpleView.MODE_DEFAULT);
                 simpleView.setCurrentColor(Ball.SOFT_RED);
                 break;
             case R.id.greenBallBtn:
-                simpleView.setCurrentMode(Mode.DEFAULT);
+                simpleView.setCurrentMode(SimpleView.MODE_DEFAULT);
                 simpleView.setCurrentColor(Ball.SOFT_GREEN);
                 break;
             case R.id.blueBallBtn:
-                simpleView.setCurrentMode(Mode.DEFAULT);
+                simpleView.setCurrentMode(SimpleView.MODE_DEFAULT);
                 simpleView.setCurrentColor(Ball.SOFT_BLUE);
                 break;
             case R.id.purpleBallBtn:
-                simpleView.setCurrentMode(Mode.DEFAULT);
+                simpleView.setCurrentMode(SimpleView.MODE_DEFAULT);
                 simpleView.setCurrentColor(Ball.SOFT_PURPLE);
                 break;
             case R.id.rainbowBallBtn:
-                simpleView.setCurrentMode(Mode.COLOR_SWITCH);
+                simpleView.setCurrentMode(SimpleView.MODE_COLOR_SWITCH);
         }
         updateSelectedBall();
+        vibrate();
     }
 
     /**
      * Updates the visuals in {@link MainActivity#optionsPopup} to match the currently selected button.
      */
     public void updateSelectedBall() {
-        if (simpleView.getCurrentMode().equals(Mode.COLOR_SWITCH)) {
-            setSquareScale(rainbowBallBtn, 2f);
+        if (simpleView.getCurrentMode() == SimpleView.MODE_COLOR_SWITCH) {
+            setSquareScale(rainbowBallBtn, 3f);
             setSquareScale(redBallBtn, 1f);
-            setSquareScale(greenBallBtn,1f);
+            setSquareScale(greenBallBtn, 1f);
             setSquareScale(blueBallBtn, 1f);
             setSquareScale(purpleBallBtn, 1f);
             return;
         }
         switch (simpleView.getCurrentColor()) {
             case Ball.SOFT_RED:
-                setSquareScale(redBallBtn, 1.35f);
-                setSquareScale(greenBallBtn,1f);
+                setSquareScale(redBallBtn, 1.5f);
+                setSquareScale(greenBallBtn, 1f);
                 setSquareScale(blueBallBtn, 1f);
                 setSquareScale(purpleBallBtn, 1f);
-                setSquareScale(rainbowBallBtn, 1.25f);
+                setSquareScale(rainbowBallBtn, 2f);
                 break;
             case Ball.SOFT_GREEN:
-                setSquareScale(greenBallBtn,1.35f);
+                setSquareScale(greenBallBtn, 1.5f);
                 setSquareScale(redBallBtn, 1f);
                 setSquareScale(blueBallBtn, 1f);
                 setSquareScale(purpleBallBtn, 1f);
-                setSquareScale(rainbowBallBtn, 1.25f);
+                setSquareScale(rainbowBallBtn, 2f);
                 break;
             case Ball.SOFT_BLUE:
-                setSquareScale(blueBallBtn, 1.35f);
+                setSquareScale(blueBallBtn, 1.5f);
                 setSquareScale(redBallBtn, 1f);
-                setSquareScale(greenBallBtn,1f);
+                setSquareScale(greenBallBtn, 1f);
                 setSquareScale(purpleBallBtn, 1f);
-                setSquareScale(rainbowBallBtn, 1.25f);
+                setSquareScale(rainbowBallBtn, 2f);
                 break;
             case Ball.SOFT_PURPLE:
-                setSquareScale(purpleBallBtn, 1.35f);
+                setSquareScale(purpleBallBtn, 1.5f);
                 setSquareScale(redBallBtn, 1f);
-                setSquareScale(greenBallBtn,1f);
+                setSquareScale(greenBallBtn, 1f);
                 setSquareScale(blueBallBtn, 1f);
-                setSquareScale(rainbowBallBtn, 1.25f);
+                setSquareScale(rainbowBallBtn, 2f);
                 break;
         }
     }
@@ -312,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     /**
      * A more efficient way of scaling up ball buttons.
      *
-     * @param view Ball button ({@link MainActivity#soundTglBtn}, {@link MainActivity#redBallBtn}, {@link MainActivity#greenBallBtn}, {@link MainActivity#blueBallBtn}, {@link MainActivity#purpleBallBtn}, {@link MainActivity#rainbowBallBtn}).
+     * @param view  Ball button ({@link MainActivity#soundTglBtn}, {@link MainActivity#redBallBtn}, {@link MainActivity#greenBallBtn}, {@link MainActivity#blueBallBtn}, {@link MainActivity#purpleBallBtn}, {@link MainActivity#rainbowBallBtn}).
      * @param scale Size multiplier
      */
     public void setSquareScale(View view, float scale) {
@@ -321,10 +389,10 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     }
 
     /**
-     * A method to toggle the visibility of {@link MainActivity#options}. Calls {@link MainActivity#setOptionsVisibility(int)}.
+     * A method to toggle the visibility of {@link MainActivity#optionsBtn}. Calls {@link MainActivity#setOptionsVisibility(int)}.
      */
     public void toggleOptionsVisibility() {
-        if (options.getVisibility() == View.VISIBLE) {
+        if (optionsBtn.getVisibility() == View.VISIBLE) {
             setOptionsVisibility(View.INVISIBLE);
         } else {
             setOptionsVisibility(View.VISIBLE);
@@ -332,22 +400,55 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     }
 
     /**
-     * A method to set the visibility of {@link MainActivity#options}.
+     * A method to toggle the visibility of {@link MainActivity#trashBtn}. Calls {@link MainActivity#setTrashVisibility(int)}.
+     */
+    public void toggleTrashVisibility() {
+        if (trashBtn.getVisibility() == View.VISIBLE) {
+            setTrashVisibility(View.INVISIBLE);
+        } else {
+            setTrashVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * A method to set the visibility of {@link MainActivity#optionsBtn}.
      *
-     * @param visibility {@link View#VISIBLE} or {@link View#INVISIBLE} depending on what state {@link MainActivity#options} should be in.
+     * @param visibility {@link View#VISIBLE} or {@link View#INVISIBLE} depending on what state {@link MainActivity#optionsBtn} should be in.
      */
     public void setOptionsVisibility(int visibility) {
         switch (visibility) {
             case View.VISIBLE:
-                if (options.getVisibility() != View.VISIBLE) {
-                    options.startAnimation(fadeInAnim);
-                    options.setVisibility(View.VISIBLE);
+                if (optionsBtn.getVisibility() != View.VISIBLE) {
+                    optionsBtn.startAnimation(fadeInAnim);
+                    optionsBtn.setVisibility(View.VISIBLE);
                 }
                 break;
             case View.INVISIBLE:
-                if (options.getVisibility() != View.INVISIBLE) {
-                    options.startAnimation(fadeOutAnim);
-                    options.setVisibility(View.INVISIBLE);
+                if (optionsBtn.getVisibility() != View.INVISIBLE) {
+                    optionsBtn.startAnimation(fadeOutAnim);
+                    optionsBtn.setVisibility(View.INVISIBLE);
+                }
+                break;
+        }
+    }
+
+    /**
+     * A method to set the visibility of {@link MainActivity#trashBtn}.
+     *
+     * @param visibility {@link View#VISIBLE} or {@link View#INVISIBLE} depending on what state {@link MainActivity#trashBtn} should be in.
+     */
+    public void setTrashVisibility(int visibility) {
+        switch (visibility) {
+            case View.VISIBLE:
+                if (trashBtn.getVisibility() != View.VISIBLE) {
+                    trashBtn.startAnimation(fadeInAnim);
+                    trashBtn.setVisibility(View.VISIBLE);
+                }
+                break;
+            case View.INVISIBLE:
+                if (trashBtn.getVisibility() != View.INVISIBLE) {
+                    trashBtn.startAnimation(fadeOutAnim);
+                    trashBtn.setVisibility(View.INVISIBLE);
                 }
                 break;
         }
@@ -375,6 +476,7 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     public void onBackPressed() {
         removeActionBar();
         setOptionsVisibility(View.VISIBLE);
+        setTrashVisibility(View.VISIBLE);
         simpleView.clearTemp();
     }
 
@@ -383,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     public void onWindowFocusChanged(boolean hasFocus) {
         removeActionBar();
         setOptionsVisibility(View.VISIBLE);
+        setTrashVisibility(View.VISIBLE);
         simpleView.clearTemp();
         super.onWindowFocusChanged(hasFocus);
     }
@@ -407,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     @Override
     public void onClickRelease() {
         setOptionsVisibility(View.INVISIBLE);
+        setTrashVisibility(View.INVISIBLE);
     }
 
     /**
@@ -425,9 +529,10 @@ public class MainActivity extends AppCompatActivity implements SimpleView.Simple
     /**
      * Vibrates device
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void vibrate() {
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(VibrationEffect.createOneShot(VIBRATE_TIME, VibrationEffect.DEFAULT_AMPLITUDE));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(VibrationEffect.createOneShot(VIBRATE_TIME, VIBRATE_AMPLITUDE));
+        }
     }
 }

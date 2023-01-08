@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2022 VeryRandomCreator
+  ~ Copyright (c) 2022-2023 VeryRandomCreator
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
   ~
@@ -25,14 +25,17 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="25dp"
-        android:text="@string/sound"
         android:contentDescription="@string/sound_swtch_dsc"
+        android:text="@string/sound"
+        android:textColorHighlight="@color/soft_grey"
+        android:textColorLink="@color/soft_dark_grey"
         android:textSize="35sp"
+        android:theme="@style/Theme.Ball"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <HorizontalScrollView
         android:layout_width="300dp"
-        android:layout_height="60dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/soundTglBtn"
         android:layout_alignParentStart="true"
         android:layout_marginStart="15dp"
@@ -50,9 +53,12 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="22dp"
                 android:backgroundTint="#00FFFFFF"
-                android:src="@drawable/ic_baseline_circle_24"
                 android:contentDescription="@string/red_ball_btn_dsc"
+                android:src="@drawable/ic_baseline_circle_24"
                 app:tint="@color/soft_red" />
 
             <ImageButton
@@ -61,6 +67,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/redBallBtn"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="22dp"
                 android:backgroundTint="#00FFFFFF"
                 android:src="@drawable/ic_baseline_circle_24"
                 android:contentDescription="@string/green_ball_btn_dsc"
@@ -72,6 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/greenBallBtn"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="22dp"
                 android:contentDescription="@string/blue_ball_btn_dsc"
                 android:backgroundTint="#00FFFFFF"
                 android:src="@drawable/ic_baseline_circle_24"
@@ -83,6 +95,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/blueBallBtn"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="22dp"
                 android:contentDescription="@string/purple_ball_btn_dsc"
                 android:backgroundTint="#00FFFFFF"
                 android:src="@drawable/ic_baseline_circle_24"

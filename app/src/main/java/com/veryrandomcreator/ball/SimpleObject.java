@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
- Copyright (c) 2022 VeryRandomCreator
+ Copyright (c) 2022-2023 VeryRandomCreator
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -27,11 +27,10 @@ public interface SimpleObject {
      *
      * @param x x pixel on screen of object
      * @param y y pixel on screen of object
-     * @param width width of object
-     * @param height height of object
      * @return boolean of whether or not object intersects object derived from {@link SimpleObject}
      */
-    boolean intersects(int x, int y, int width, int height);
+
+    boolean intersects(int x, int y);
 
     /**
      * Retrieves width of object in pixels

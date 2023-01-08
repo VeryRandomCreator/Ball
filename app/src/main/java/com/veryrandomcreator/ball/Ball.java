@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
- Copyright (c) 2022 VeryRandomCreator
+ Copyright (c) 2022-2023 VeryRandomCreator
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -32,10 +32,10 @@ public class Ball implements SimpleObject {
     /**
      * Constructor of {@link Ball}
      *
-     * @param x The initial x location on screen for the ball to spawn at.
-     * @param y The initial y location on screen for the ball to spawn at.
-     * @param velX The speed the ball will travel on the x axis of the screen. (velX per time)
-     * @param velY The speed the ball will travel on the y axis of the screen. (velY per time)
+     * @param x     The initial x location on screen for the ball to spawn at.
+     * @param y     The initial y location on screen for the ball to spawn at.
+     * @param velX  The speed the ball will travel on the x axis of the screen. (velX per time)
+     * @param velY  The speed the ball will travel on the y axis of the screen. (velY per time)
      * @param color The color of the ball, expressed as a byte in reference to the according color: {@link Ball#SOFT_RED}, {@link Ball#SOFT_GREEN}, {@link Ball#SOFT_BLUE}, or {@link Ball#SOFT_PURPLE}. The
      */
     public Ball(int x, int y, int velX, int velY, byte color) {
@@ -67,17 +67,8 @@ public class Ball implements SimpleObject {
     }
 
     @Override
-    public boolean intersects(int x, int y, int width, int height) {
-        if (x + RADIUS >= x) {
-            return true;
-        }
-        if (y+ RADIUS >= x) {
-            return true;
-        }
-        if (y - RADIUS <= y + height) {
-            return true;
-        }
-        return x - RADIUS <= x + width;
+    public boolean intersects(int x, int y) {
+        return x >= this.x - RADIUS && x <= this.x + RADIUS && y >= this.y - RADIUS && y <= this.y + RADIUS;
     }
 
     @Override

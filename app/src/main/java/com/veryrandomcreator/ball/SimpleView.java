@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
- Copyright (c) 2022 VeryRandomCreator
+ Copyright (c) 2022-2023 VeryRandomCreator
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -36,6 +36,7 @@ public class SimpleView extends SurfaceView implements Runnable {
     private boolean isActive = false;
     private boolean hasReleased = false;
     private boolean hasStarted = false;
+    private boolean isTrashActive = false;
 
     private final int WIDTH, HEIGHT;
     private final SurfaceHolder SURFACE_HOLDER;
@@ -44,7 +45,7 @@ public class SimpleView extends SurfaceView implements Runnable {
     private int titleRand = 0;
     private long previousTime = -1;
     private byte currentColor = Ball.SOFT_RED;
-    private Mode currentMode = Mode.DEFAULT;
+    private byte currentMode = MODE_DEFAULT;
     private Point actionDown = null;
 
     private Ball recentBall;
@@ -53,6 +54,9 @@ public class SimpleView extends SurfaceView implements Runnable {
     private List<TitleBall> titleBalls = new ArrayList<>();
 
     MediaPlayer sound = null;
+
+    public static final byte MODE_DEFAULT = 1;
+    public static final byte MODE_COLOR_SWITCH = 2;
 
     /**
      * The constructor for this view.
@@ -101,36 +105,40 @@ public class SimpleView extends SurfaceView implements Runnable {
      * @param event Data necessary for the prediction of the ball's path, such as the location the {@link MotionEvent#ACTION_MOVE} is occurring at.
      */
     public void onDrag(MotionEvent event) {
-        ballPredictions = new ArrayList<>();
-        int currentVelX = getVelFromDis(actionDown.x, (int) event.getX());
-        int currentVelY = getVelFromDis(actionDown.y, (int) event.getY());
-        BallPredictionObject previous = null;
-        BallPredictionObject future;
-        for (int i = 0; i < 15; i++) {
-            if (previous == null) {
-                previous = new BallPredictionObject(actionDown.x + currentVelX, actionDown.y + currentVelY);
-                future = new BallPredictionObject(actionDown.x + currentVelX, actionDown.y + currentVelY);
-            } else {
-                future = new BallPredictionObject(previous.x + currentVelX, previous.y + currentVelY);
+        if (!isTrashActive) {
+            ballPredictions = new ArrayList<>();
+            int currentVelX = getVelFromDis(actionDown.x, (int) event.getX());
+            int currentVelY = getVelFromDis(actionDown.y, (int) event.getY());
+            BallPredictionObject previous = null;
+            BallPredictionObject future;
+            for (int i = 0; i < 15; i++) {
+                if (previous == null) {
+                    previous = new BallPredictionObject(actionDown.x + currentVelX, actionDown.y + currentVelY);
+                    future = new BallPredictionObject(actionDown.x + currentVelX, actionDown.y + currentVelY);
+                } else {
+                    future = new BallPredictionObject(previous.x + currentVelX, previous.y + currentVelY);
+                }
+                if (future.x <= 0) {
+                    future.x *= -1;
+                    currentVelX *= -1;
+                }
+                if (future.x >= WIDTH) {
+                    future.x = WIDTH - (previous.x + currentVelX - WIDTH);
+                    currentVelX *= -1;
+                }
+                if (future.y <= 0) {
+                    future.y *= -1;
+                    currentVelY *= -1;
+                }
+                if (future.y >= HEIGHT) {
+                    future.y = HEIGHT - (previous.y + currentVelY - HEIGHT);
+                    currentVelY *= -1;
+                }
+                ballPredictions.add(future);
+                previous = future;
             }
-            if (future.x <= 0) {
-                future.x *= -1;
-                currentVelX *= -1;
-            }
-            if (future.x >= WIDTH) {
-                future.x = WIDTH - (previous.x + currentVelX - WIDTH);
-                currentVelX *= -1;
-            }
-            if (future.y <= 0) {
-                future.y *= -1;
-                currentVelY *= -1;
-            }
-            if (future.y >= HEIGHT) {
-                future.y = HEIGHT - (previous.y + currentVelY - HEIGHT);
-                currentVelY *= -1;
-            }
-            ballPredictions.add(future);
-            previous = future;
+        } else {
+            deleteBallAt((int) event.getX(), (int) event.getY());
         }
     }
 
@@ -138,11 +146,13 @@ public class SimpleView extends SurfaceView implements Runnable {
      * @param event Data necessary for the determination of the ball's velocity, such as the location the {@link MotionEvent#ACTION_DOWN} is occurring at.
      */
     public void onPressDown(MotionEvent event) {
-        spawnBall((int) event.getX(), (int) event.getY(), 0, 0);
-        actionDown = new Point((int) event.getX(), (int) event.getY());
-        hasReleased = false;
-        if (!hasStarted) {
-            clearTitle();
+        if (!isTrashActive) {
+            spawnBall((int) event.getX(), (int) event.getY(), 0, 0);
+            actionDown = new Point((int) event.getX(), (int) event.getY());
+            hasReleased = false;
+            if (!hasStarted) {
+                clearTitle();
+            }
         }
     }
 
@@ -161,37 +171,49 @@ public class SimpleView extends SurfaceView implements Runnable {
      * @param event Data necessary for the determination of the ball's velocity, such as the location the {@link MotionEvent#ACTION_UP} is occurring at.
      */
     public void onRelease(MotionEvent event) {
-        hasReleased = true;
-        switch (currentMode) {
-            case DEFAULT:
-                break;
-            case COLOR_SWITCH:
-                switch (currentColor) {
-                    case Ball.SOFT_RED:
-                        currentColor = Ball.SOFT_BLUE;
-                        break;
-                    case Ball.SOFT_BLUE:
-                        currentColor = Ball.SOFT_GREEN;
-                        break;
-                    case Ball.SOFT_GREEN:
-                        currentColor = Ball.SOFT_PURPLE;
-                        break;
-                    case Ball.SOFT_PURPLE:
-                        currentColor = Ball.SOFT_RED;
-                        break;
-                }
-                break;
+        if (!isTrashActive) {
+            hasReleased = true;
+            switch (currentMode) {
+                case MODE_DEFAULT:
+                    break;
+                case MODE_COLOR_SWITCH:
+                    switch (currentColor) {
+                        case Ball.SOFT_RED:
+                            currentColor = Ball.SOFT_BLUE;
+                            break;
+                        case Ball.SOFT_BLUE:
+                            currentColor = Ball.SOFT_GREEN;
+                            break;
+                        case Ball.SOFT_GREEN:
+                            currentColor = Ball.SOFT_PURPLE;
+                            break;
+                        case Ball.SOFT_PURPLE:
+                            currentColor = Ball.SOFT_RED;
+                            break;
+                    }
+                    break;
+            }
+            launchBall(getVelFromDis(actionDown.x, (int) event.getX()), getVelFromDis(actionDown.y, (int) event.getY()));
+            ballPredictions = new ArrayList<>();
+            SIMPLE_VIEW_ADAPTER.onClickRelease();
+        } else {
+            deleteBallAt((int) event.getX(), (int) event.getY());
         }
-        launchBall(getVelFromDis(actionDown.x, (int) event.getX()), getVelFromDis(actionDown.y, (int) event.getY()));
-        ballPredictions = new ArrayList<>();
-        SIMPLE_VIEW_ADAPTER.onClickRelease();
     }
 
-    public Mode getCurrentMode() {
+    public void deleteBallAt(int x, int y) {
+        for (int i = 0; i < balls.size(); i++) {
+            if (balls.get(i).intersects(x, y)) {
+                balls.remove(i);
+            }
+        }
+    }
+
+    public byte getCurrentMode() {
         return currentMode;
     }
 
-    public void setCurrentMode(Mode currentMode) {
+    public void setCurrentMode(byte currentMode) {
         this.currentMode = currentMode;
     }
 
@@ -401,6 +423,10 @@ public class SimpleView extends SurfaceView implements Runnable {
 
     public void setCurrentColor(byte currentColor) {
         this.currentColor = currentColor;
+    }
+
+    public void setTrashActive(boolean trashActive) {
+        isTrashActive = trashActive;
     }
 
     public interface SimpleViewAdapter {

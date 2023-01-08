@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2022-2023 VeryRandomCreator
+  ~ Copyright (c) 2023 VeryRandomCreator
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
   ~
@@ -11,5 +11,13 @@
 <vector android:height="72dp" android:tint="@color/soft_dark_grey"
     android:viewportHeight="24" android:viewportWidth="24"
     android:width="72dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="@android:color/white" android:pathData="M12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,10c-1.1,0 -2,0.9 -2,2s0.9,2 2,2 2,-0.9 2,-2 -0.9,-2 -2,-2zM12,16c-1.1,0 -2,0.9 -2,2s0.9,2 2,2 2,-0.9 2,-2 -0.9,-2 -2,-2z"/>
+    <group
+        android:name="body">
+        <path android:fillColor="@color/soft_dark_grey" android:pathData="M19,14zM6,7v12c0,1.1 0.9,2 2,2h8c1.1,0 2,-0.9 2,-2L18,7zM14,4h-2z M 8 9 L 8 9 H 10 V 19 H 8 Z M 11 9 H 14 V 19 H 11 Z M 13 9 H 16 V 19 H 13 Z"/>
+    </group>
+    <group android:name="lid"
+        android:rotation="-10"
+        android:pivotY="10">
+        <path android:fillColor="@color/soft_dark_grey" android:pathData="M19,4h-3.5l-1,-1h-5l-1,1L5,4v2h14zM6,4h-2z"/>
+    </group>
 </vector>
