@@ -7,7 +7,7 @@ When this privacy policy mentions "I", it refers to the developer or the writer 
 When this privacy policy mentions "you" or "your", it refers to the user or the belonging(s) of the user, respectively.
 
 ## Personal Information
-I have not developed this app with any intention or knowledge that personal information about the user is sent or used. Personal information being information such as your name, phone number, email, address, or anything indentifiable.
+I have not developed this app with any intention or knowledge that personal information about the user is sent or used. Personal information is information such as your name, phone number, email, address, or anything identifiable.
 
 ## Device Information
 No information unique to your device (ex: ids) is saved or sent.
